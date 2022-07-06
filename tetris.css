@@ -1,0 +1,12 @@
+.gridContainer{
+    border:1px solid black;
+    display:flex;
+    flex-wrap:wrap;
+    height:440px;
+    width: 220px;
+}
+.gridContainer>div{
+    height:20px;
+    width:20px;
+    border:1px solid black;
+}
