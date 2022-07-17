@@ -9,6 +9,7 @@ for(let i=0;i<=199;++i){
 //Game constants
 const grids=document.querySelectorAll(".gridContainer div");
 const width=10;
+
 //Tetrimino testing
 const lTetromino = [
   [1, width+1, width*2+1, 2],
@@ -46,6 +47,19 @@ const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromi
 //Variables
 let gameEnded=false;
 let blockList=[];
+let direction=width;
+
+
+//Listen to keyboard entries
+const keyListen=(e)=>{
+  if(e.keyCode===37) direction=-1;
+  else if(e.keyCode===39) direction=1;
+}
+
+document.addEventListener("keydown",keyListen);
+
+
+
 
 const selectTetrimino=()=>{
   if(gameEnded===true) return;
@@ -59,16 +73,19 @@ const showTetrimino=(selectedTetrimino)=>{
     grids[selectedTetrimino[0][i]].classList.add("block");
     blockList.push(selectedTetrimino[0][i]);
   }
-  setTimeout(()=>fallTetrimino(blockList),2000);
+  setTimeout(()=>moveTetrimino(blockList),500);
 }
-const fallTetrimino=(blockList)=>{
+
+const moveTetrimino=(blockList)=>{
   blockList.forEach(indx=>{
     grids[indx].classList.remove("block");
   });
-  blockList=blockList.map(indx=>indx+width);
+  blockList=blockList.map(indx=>indx+direction);
+  if(direction!=width) direction=width;
   blockList.forEach(indx=>grids[indx].classList.add("block"));
-  setTimeout(()=>fallTetrimino(blockList),2000);
+  setTimeout(()=>moveTetrimino(blockList),500);
 }
+
 
 selectTetrimino();
   
