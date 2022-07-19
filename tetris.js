@@ -47,43 +47,60 @@ const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromi
 //Variables
 let gameEnded=false;
 let blockList=[];
-let direction=width;
-
+let direction=0;
+let touchGround=false;
+let choosenPattern;
+let rCount=0;
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
   if(e.keyCode===37) direction=-1;
   else if(e.keyCode===39) direction=1;
+  else if(e.keyCode===82) rotateTetrimino();
 }
 
 document.addEventListener("keydown",keyListen);
 
 
 
-
 const selectTetrimino=()=>{
-  if(gameEnded===true) return;
+  touchGround=false;
+  blockList=[];
   const randomIndex=Math.floor(Math.random()*5);
-  const selectedTetrimino=theTetrominoes[randomIndex];
-  showTetrimino(selectedTetrimino);
-  //const timerLapse=setTimeout(selectTetrimino,5000);
-}
-const showTetrimino=(selectedTetrimino)=>{
-  for(let i=0;i<selectedTetrimino.length;++i) {
-    grids[selectedTetrimino[0][i]].classList.add("block");
-    blockList.push(selectedTetrimino[0][i]);
-  }
-  setTimeout(()=>moveTetrimino(blockList),500);
+  choosenPattern=theTetrominoes[randomIndex];
+  showTetrimino();
 }
 
-const moveTetrimino=(blockList)=>{
-  blockList.forEach(indx=>{
-    grids[indx].classList.remove("block");
-  });
-  blockList=blockList.map(indx=>indx+direction);
-  if(direction!=width) direction=width;
-  blockList.forEach(indx=>grids[indx].classList.add("block"));
-  setTimeout(()=>moveTetrimino(blockList),500);
+
+const showTetrimino=()=>{
+  for(let i=0;i<choosenPattern.length;++i) {
+    grids[choosenPattern[0][i]].classList.add("block");
+    blockList.push(choosenPattern[0][i]);
+  }
+  setTimeout(()=>moveTetrimino(),500);
+}
+
+
+const rotateTetrimino=()=>{
+  rCount=(rCount+1)%5;
+  console.log(rCount);
+}
+
+
+const moveTetrimino=()=>{
+    blockList.forEach(indx=>{
+      if(indx>189) touchGround=true;
+    })
+    if(touchGround) selectTetrimino();
+    else{
+    blockList.forEach(indx=>{
+      grids[indx].classList.remove("block");
+    });
+    blockList=blockList.map(indx=>indx+width+direction);
+    direction=0;
+    blockList.forEach(indx=>grids[indx].classList.add("block"));
+    setTimeout(()=>moveTetrimino(blockList),500);
+  }
 }
 
 
