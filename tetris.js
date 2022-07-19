@@ -52,11 +52,14 @@ let touchGround=false;
 let choosenPattern;
 let rCount=0;
 
+
 //Listen to keyboard entries
 const keyListen=(e)=>{
   if(e.keyCode===37) direction=-1;
   else if(e.keyCode===39) direction=1;
-  else if(e.keyCode===82) rotateTetrimino();
+  else if(e.keyCode===82) {
+    rCount=(rCount+1)%5;
+  }
 }
 
 document.addEventListener("keydown",keyListen);
@@ -74,16 +77,10 @@ const selectTetrimino=()=>{
 
 const showTetrimino=()=>{
   for(let i=0;i<choosenPattern.length;++i) {
-    grids[choosenPattern[0][i]].classList.add("block");
-    blockList.push(choosenPattern[0][i]);
+    grids[choosenPattern[rCount][i]].classList.add("block");
+    blockList.push(choosenPattern[rCount][i]);
   }
   setTimeout(()=>moveTetrimino(),500);
-}
-
-
-const rotateTetrimino=()=>{
-  rCount=(rCount+1)%5;
-  console.log(rCount);
 }
 
 
