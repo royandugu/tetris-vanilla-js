@@ -10,6 +10,7 @@ for(let i=0;i<=199;++i){
 const grids=document.querySelectorAll(".gridContainer div");
 const width=10;
 
+
 //Tetrimino testing
 const lTetromino = [
   [1, width+1, width*2+1, 2],
@@ -51,11 +52,12 @@ let direction=0;
 let touchGround=false;
 let choosenPattern;
 let rCount=0;
+let flag=false;
 
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
-  if(e.keyCode===37) direction=-1;
+  if(e.keyCode===37 && flag) direction=-1;
   else if(e.keyCode===39) direction=1;
   else if(e.keyCode===82) {
     rCount=(rCount+1)%5;
@@ -63,7 +65,6 @@ const keyListen=(e)=>{
 }
 
 document.addEventListener("keydown",keyListen);
-
 
 
 const selectTetrimino=()=>{
@@ -77,6 +78,7 @@ const selectTetrimino=()=>{
 
 const showTetrimino=()=>{
   for(let i=0;i<choosenPattern.length;++i) {
+    console.log(rCount);
     grids[choosenPattern[rCount][i]].classList.add("block");
     blockList.push(choosenPattern[rCount][i]);
   }
@@ -95,11 +97,23 @@ const moveTetrimino=()=>{
     });
     blockList=blockList.map(indx=>indx+width+direction);
     direction=0;
+    modifyFlag();
     blockList.forEach(indx=>grids[indx].classList.add("block"));
     setTimeout(()=>moveTetrimino(blockList),500);
   }
 }
 
+
+//need fixing : Flag is always false
+const modifyFlag=()=>{
+  blockList.forEach(indx=>{
+    if(width%indx===0) {
+      flag=true;
+      return;
+    }
+  })
+  flag=false;
+}
 
 selectTetrimino();
   
