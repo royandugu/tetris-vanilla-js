@@ -52,13 +52,12 @@ let direction=0;
 let touchGround=false;
 let choosenPattern;
 let rCount=0;
-let flag=false;
 
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
-  if(e.keyCode===37 && flag) direction=-1;
-  else if(e.keyCode===39) direction=1;
+  if(e.keyCode===37 && blockList.some(index=>index%width!=0)) direction=-1;
+  else if(e.keyCode===39 && blockList.some(index=>index%width!=width-1)) direction=1;
   else if(e.keyCode===82) {
     rCount=(rCount+1)%5;
   }
@@ -97,22 +96,9 @@ const moveTetrimino=()=>{
     });
     blockList=blockList.map(indx=>indx+width+direction);
     direction=0;
-    modifyFlag();
     blockList.forEach(indx=>grids[indx].classList.add("block"));
     setTimeout(()=>moveTetrimino(blockList),500);
   }
-}
-
-
-//need fixing : Flag is always false
-const modifyFlag=()=>{
-  blockList.forEach(indx=>{
-    if(width%indx===0) {
-      flag=true;
-      return;
-    }
-  })
-  flag=false;
 }
 
 selectTetrimino();
