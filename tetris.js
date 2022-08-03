@@ -13,7 +13,7 @@ const width=10;
 
 //Tetrimino testing
 const lTetromino = [
-  [1, width+1, width*2+1, 2],
+  [1, width+1, width*2+1,2],
   [width, width+1, width+2, width*2+2],
   [1, width+1, width*2+1, width*2],
   [width, width*2, width*2+1, width*2+2]
@@ -56,8 +56,8 @@ let rCount=0;
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
-  if(e.keyCode===37 && blockList.some(index=>index%width!=0)) direction=-1;
-  else if(e.keyCode===39 && blockList.some(index=>index%width!=width-1)) direction=1;
+  if(e.keyCode===37) (blockList.some(index=>index%width===0))?direction=0:direction=-1;
+  else if(e.keyCode===39) (blockList.some(index=>index%width===width-1))?direction=0:direction=1
   else if(e.keyCode===82) {
     rCount=(rCount+1)%5;
   }
@@ -75,6 +75,15 @@ const selectTetrimino=()=>{
 }
 
 
+const assignRestBlocks=()=>{
+  if(blockList.length>0){
+    blockList.forEach(indx=>{
+      grids[indx].classList.add("restedBlock");
+    })
+  }
+}
+
+
 const showTetrimino=()=>{
   for(let i=0;i<choosenPattern.length;++i) {
     console.log(rCount);
@@ -86,10 +95,16 @@ const showTetrimino=()=>{
 
 
 const moveTetrimino=()=>{
-    blockList.forEach(indx=>{
-      if(indx>189) touchGround=true;
+    blockList.forEach(index=>{
+      if(index<189){
+        if(grids[index+width].classList.contains("restedBlock"))touchGround=true;
+      }
+      else touchGround=true;
     })
-    if(touchGround) selectTetrimino();
+    if(touchGround) {
+      assignRestBlocks();
+      selectTetrimino();
+    }
     else{
     blockList.forEach(indx=>{
       grids[indx].classList.remove("block");
