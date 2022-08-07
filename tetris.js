@@ -56,8 +56,8 @@ let rCount=0;
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
-  if(e.keyCode===37) (blockList.some(index=>index%width===0))?direction=0:direction=-1;
-  else if(e.keyCode===39) (blockList.some(index=>index%width===width-1))?direction=0:direction=1
+  if(e.keyCode===37) (blockList.some(index=>index%width===0) || blockList.some(index=>grids[index-1].classList.contains("restedBlock")))?direction=0:direction=-1;
+  else if(e.keyCode===39) (blockList.some(index=>index%width===width-1) || blockList.some(index=>grids[index+1].classList.contains("restedBlock")))?direction=0:direction=1
   else if(e.keyCode===82) {
     rCount=(rCount+1)%5;
   }
@@ -96,7 +96,7 @@ const showTetrimino=()=>{
 
 const moveTetrimino=()=>{
     blockList.forEach(index=>{
-      if(index<189){
+      if(index<=189){
         if(grids[index+width].classList.contains("restedBlock"))touchGround=true;
       }
       else touchGround=true;
