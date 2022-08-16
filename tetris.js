@@ -43,7 +43,7 @@ const iTetromino = [
   [width,width+1,width+2,width+3]
 ]
 const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
-  
+
 
 //Variables
 let gameEnded=false;
@@ -59,8 +59,16 @@ let choosenTetrimino;
 const keyListen=(e)=>{
   if(e.keyCode===37) (blockList.some(index=>index%width===0) || blockList.some(index=>grids[index-1].classList.contains("restedBlock")))?direction=0:direction=-1;
   else if(e.keyCode===39) (blockList.some(index=>index%width===width-1) || blockList.some(index=>grids[index+1].classList.contains("restedBlock")))?direction=0:direction=1
-  else if(e.keyCode===82 && blockList.some(index=>index+width<=189)) {
-    rCount=(rCount+1)%4;
+  else if(e.keyCode===82) {
+    (choosenPattern.length>0) && choosenPattern[(rCount+1)%4].every((indx,i)=>{
+        if(grids[indx].classList.contains("restedBlock")) {
+          console.log("No rotation");
+          return false;
+        }
+        if(i===3) rCount=(rCount+1)%4;
+        else return true;
+
+    })
   }
 }
 
@@ -68,6 +76,7 @@ document.addEventListener("keydown",keyListen);
 
 
 const selectTetrimino=()=>{
+  rCount=0;
   touchGround=false;
   blockList=[];
   const randomIndex=Math.floor(Math.random()*5);
