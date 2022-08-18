@@ -73,7 +73,7 @@ const keyListen=(e)=>{
 }
 
 document.addEventListener("keydown",keyListen);
-
+ 
 
 const selectTetrimino=()=>{
   rCount=0;
@@ -82,28 +82,30 @@ const selectTetrimino=()=>{
   const randomIndex=Math.floor(Math.random()*5);
   choosenPattern=theTetrominoes[randomIndex];
   showTetrimino();
+  return;
 }
 
 
 const assignRestBlocks=()=>{
   if(blockList.length>0){
-    blockList.forEach(indx=>{
-      grids[indx].classList.add("restedBlock");
+    blockList.forEach(index=>{
+      grids[index].classList.remove("block");
+      grids[index].classList.add("restedBlock");
     })
   }
+  return;
 }
 
 
 const showTetrimino=()=>{
-  for(let i=0;i<choosenPattern.length;++i) {
-    grids[choosenPattern[rCount][i]].classList.add("block");
-    blockList.push(choosenPattern[rCount][i]);
-  }
+  choosenPattern[rCount].forEach((index,i)=>blockList[i]=index);
+  blockList.forEach(index=>grids[index].classList.add("block"));
   setTimeout(()=>moveTetrimino(),500);
 }
 
 
 const moveTetrimino=()=>{
+    //Convert to loop logic rather than recursion
     blockList.forEach(index=>{
       if(index<=189){
         if(grids[index+width].classList.contains("restedBlock"))touchGround=true;
@@ -113,6 +115,8 @@ const moveTetrimino=()=>{
     if(touchGround) {
       assignRestBlocks();
       selectTetrimino();
+      console.log("Function will return");
+      return;
     }
     else{
     blockList.forEach(indx=>{
@@ -129,4 +133,3 @@ const moveTetrimino=()=>{
 }
 
 selectTetrimino();
-  
