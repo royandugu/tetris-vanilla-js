@@ -57,33 +57,14 @@ let choosenTetrimino;
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
-  if(e.keyCode===37) (blockList.some(index=>index%width===0) || blockList.some(index=>grids[index-1].classList.contains("restedBlock")))?direction=0:direction=-1;
-  else if(e.keyCode===39) (blockList.some(index=>index%width===width-1) || blockList.some(index=>grids[index+1].classList.contains("restedBlock")))?direction=0:direction=1
+  if(e.keyCode===37) moveTetriminoLeft();
+  else if(e.keyCode===39) moveTetriminoRight();
   else if(e.keyCode===82) {
-    (choosenPattern.length>0) && choosenPattern[(rCount+1)%4].every((indx,i)=>{
-        if(grids[indx].classList.contains("restedBlock")) {
-          console.log("No rotation");
-          return false;
-        }
-        if(i===3) rCount=(rCount+1)%4;
-        else return true;
-
-    })
+    //Proper rotation logic
   }
 }
 
 document.addEventListener("keydown",keyListen);
- 
-
-const selectTetrimino=()=>{
-  rCount=0;
-  touchGround=false;
-  blockList=[];
-  const randomIndex=Math.floor(Math.random()*5);
-  choosenPattern=theTetrominoes[randomIndex];
-  showTetrimino();
-  return;
-}
 
 
 const assignRestBlocks=()=>{
@@ -97,39 +78,89 @@ const assignRestBlocks=()=>{
 }
 
 
+const selectTetrimino=()=>{
+  rCount=0;
+  touchGround=false;
+  blockList=[];
+  const randomIndex=Math.floor(Math.random()*5);
+  choosenPattern=theTetrominoes[randomIndex];
+  showTetrimino();
+}
+
+
 const showTetrimino=()=>{
   choosenPattern[rCount].forEach((index,i)=>blockList[i]=index);
+  setTetrimino();
+  setTimeout(()=>moveTetriminoDown(),500);
+}
+
+
+const setTetrimino=()=>{
   blockList.forEach(index=>grids[index].classList.add("block"));
-  setTimeout(()=>moveTetrimino(),500);
 }
 
 
-const moveTetrimino=()=>{
-    //Convert to loop logic rather than recursion
-    blockList.forEach(index=>{
-      if(index<=189){
-        if(grids[index+width].classList.contains("restedBlock"))touchGround=true;
-      }
-      else touchGround=true;
-    })
-    if(touchGround) {
-      assignRestBlocks();
-      selectTetrimino();
-      console.log("Function will return");
-      return;
-    }
-    else{
-    blockList.forEach(indx=>{
-      grids[indx].classList.remove("block");
-    });
-    for(i=0;i<choosenPattern.length;i++){
-      choosenPattern[i]=choosenPattern[i].map(indx=>indx+width+direction);  
-    }
-    choosenPattern[rCount].forEach((indx,i)=>blockList[i]=indx);
-    direction=0;
-    blockList.forEach(indx=>grids[indx].classList.add("block"));
-    setTimeout(()=>moveTetrimino(blockList),500);
-  }
+const removeTetrimino=()=>{
+  blockList.forEach(index=>grids[index].classList.remove("block"));
 }
+
+
+const moveTetriminoLeft=()=>{
+  if(blockList.some(index=>index%width===0) || blockList.some(index=>grids[index].classList.contains("restedBlock"))) return;
+  removeTetrimino();
+  blockList=blockList.map(index=>{
+    return index-1; 
+  });
+  setTetrimino();
+}
+
+
+const moveTetriminoRight=()=>{
+  if(blockList.some(index=>index%width===width-1) || blockList.some(index=>grids[index].classList.contains("restedBlock"))) return;
+  removeTetrimino();
+  blockList=blockList.map(index=>{
+    return index+1;
+  })
+  setTetrimino();
+}
+
+
+const moveTetriminoDown=()=>{
+  if(blockList.some(index=>grids[index].classList.contains("restedBlock") || index>189)) return;
+  removeTetrimino();
+  blockList=blockList.map(index=>{
+    return index+width;
+  })
+  setTetrimino();
+  setTimeout(moveTetriminoDown,500);
+}
+
+
+// const moveTetrimino=()=>{
+//     //Convert to loop logic rather than recursion
+//     blockList.forEach(index=>{
+//       if(index<=189){
+//         if(grids[index+width].classList.contains("restedBlock"))touchGround=true;
+//       }
+//       else touchGround=true;
+//     })
+//     if(touchGround) {
+//       assignRestBlocks();
+//       selectTetrimino();
+//       return;
+//     }
+//     else{
+//     blockList.forEach(indx=>{
+//       grids[indx].classList.remove("block");
+//     });
+//     for(i=0;i<choosenPattern.length;i++){
+//       choosenPattern[i]=choosenPattern[i].map(indx=>indx+width+direction);  
+//     }
+//     choosenPattern[rCount].forEach((indx,i)=>blockList[i]=indx);
+//     direction=0;
+//     blockList.forEach(indx=>grids[indx].classList.add("block"));
+//     setTimeout(()=>moveTetrimino(blockList),500);
+//   }
+// }
 
 selectTetrimino();
