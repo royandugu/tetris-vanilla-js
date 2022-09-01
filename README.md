@@ -3,3 +3,4 @@
 To-Do <br>
 
 1. A side display to show the upcoming tetriminos
+2. Fix rotation
