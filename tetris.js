@@ -9,6 +9,13 @@ for(let i=0;i<=199;++i){
 //Game constants
 const grids=document.querySelectorAll(".gridContainer div");
 const width=10;
+const futureContainer=document.querySelector(".futureContainer");
+for(let i=0;i<16;i++){
+  const div=document.createElement("div");
+  div.textContent=i;
+  futureContainer.appendChild(div);
+}
+const futureGrids=document.querySelectorAll(".futureContainer div");
 
 
 //Tetrimino testing
@@ -53,15 +60,19 @@ let touchGround=false;
 let choosenPattern;
 let rCount=0;
 let choosenTetrimino;
+let randomIndex=[];
+let i,j;
+
+randomIndex[0]=Math.floor(Math.random()*5);
+randomIndex[1]=Math.floor(Math.random()*5);
+
 
 
 //Listen to keyboard entries
 const keyListen=(e)=>{
   if(e.keyCode===37) moveTetriminoLeft();
   else if(e.keyCode===39) moveTetriminoRight();
-  else if(e.keyCode===82) {
-    //Proper rotation logic
-  }
+  else if(e.keyCode===82) rotateTetrimino();
 }
 
 document.addEventListener("keydown",keyListen);
@@ -82,8 +93,9 @@ const selectTetrimino=()=>{
   rCount=0;
   touchGround=false;
   blockList=[];
-  const randomIndex=Math.floor(Math.random()*5);
-  choosenPattern=theTetrominoes[randomIndex];
+  randomIndex[0]=Math.floor(Math.random()*5);
+  randomIndex[1]=Math.floor(Math.random()*5);
+  choosenPattern=theTetrominoes[randomIndex[0]];
   showTetrimino();
 }
 
@@ -134,6 +146,15 @@ const moveTetriminoDown=()=>{
   setTetrimino();
   setTimeout(moveTetriminoDown,500);
 }
+
+
+const rotateTetrimino=()=>{
+  removeTetrimino();
+  rCount+=rCount%4;
+  choosenPattern[rCount].forEach((index,i)=>blockList[i]=index);
+  showTetrimino();
+}
+
 
 
 // const moveTetrimino=()=>{
