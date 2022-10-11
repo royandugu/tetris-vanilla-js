@@ -1,8 +1,8 @@
 const gridContainer=document.querySelector(".gridContainer");
 for(let i=0;i<=199;++i){
-    const div=document.createElement("div");
-    div.textContent=i;
-    gridContainer.appendChild(div);
+  const div=document.createElement("div");
+  div.textContent=i;
+  gridContainer.appendChild(div);
 }
 
 const grids=document.querySelectorAll(".gridContainer div");
@@ -65,7 +65,6 @@ const futureTetriminoes=[
 let gameEnded=false;
 let blockList=[];
 let futureList=[];
-let direction=0;
 let touchGround=false;
 let choosenPattern;
 let futurePattern;
@@ -79,13 +78,21 @@ const keyListen=(e)=>{
   if(e.keyCode===37) moveTetriminoLeft();
   else if(e.keyCode===39) moveTetriminoRight();
   else if(e.keyCode===82) rotateTetrimino();
+  else if(e.keyCode===40) fastFallTetrimino();
 }
 document.addEventListener("keydown",keyListen);
 
 
 //Display and remove the tetris blocks
-const setCurrentTetrimino=()=>{
+const setCurrentTetrimino=(value,isOld)=>{
   blockList.forEach(index=>grids[index].classList.add("block"));
+  if(isOld){
+    for(let i=0;i<4;i++){
+      for(let j=0;j<4;j++){
+        choosenPattern[i][j]+=value;
+      }
+    }
+  }
 }
 const setFutureTetrimino=()=>{
   futurePattern.forEach(index=>futureGrids[index].classList.add("futureBlock"));
@@ -112,7 +119,7 @@ const selectTetrimino=()=>{
 
 const showTetrimino=()=>{
   choosenPattern[rCount].forEach((index,i)=>blockList[i]=index);
-  setCurrentTetrimino();
+  setCurrentTetrimino(0,false);
   setFutureTetrimino();
   setTimeout(()=>moveTetriminoDown(),500);
 }
@@ -125,7 +132,7 @@ const moveTetriminoLeft=()=>{
   blockList=blockList.map(index=>{
     return index-1; 
   });
-  setCurrentTetrimino();
+  setCurrentTetrimino(-1,true);
 }
 
 const moveTetriminoRight=()=>{
@@ -134,7 +141,7 @@ const moveTetriminoRight=()=>{
   blockList=blockList.map(index=>{
     return index+1;
   })
-  setCurrentTetrimino();
+  setCurrentTetrimino(1,true);
 }
 
 const moveTetriminoDown=()=>{
@@ -155,19 +162,27 @@ const moveTetriminoDown=()=>{
     assignRestBlocks();
     return;
   }
+  
+  //else part
   removeCurrentTetrimino();
   blockList=blockList.map(index=>{
     return index+width;
   })
-  setCurrentTetrimino();
+  setCurrentTetrimino(width,true);
   setTimeout(moveTetriminoDown,500);
 }
+
+
+const fastFallTetrimino=()=>{
+   
+}
+
 
 const rotateTetrimino=()=>{
   removeCurrentTetrimino();
   rCount=(rCount+1)%4;
   choosenPattern[rCount].forEach((index,i)=>blockList[i]=index);
-  setCurrentTetrimino();
+  setCurrentTetrimino(true);
 }
 
 
